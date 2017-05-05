@@ -47,8 +47,34 @@ const checkWinning = function(movesArray, name) {
 
     for(let j = 0; j < winningCombos[i].length; j++) {
       if(movesArray.indexOf(winningCombos[i][j]) !== -1) {
-
+        winCounter++
+        console.log("win", winCounter)
       }
+    }
+    if(winCounter === 3) {
+      alert("You won " + name + "!")
     }
   }
 }
+
+const checkCounter = function() {
+  if(counter === 9) {
+    alert("It's a tie game")
+  }
+}
+
+const clearBoard = function() {
+  resetButton.addEventListener("click", function() {
+    for(let i = 0; i < divBoxes.length; i++) {
+      divBoxes[i].innerText = ""
+    }
+    winCounter = 0
+  })
+}
+
+const startGame = function() {
+  listener()
+  clearBoard()
+}
+
+startGame()
