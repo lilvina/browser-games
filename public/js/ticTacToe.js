@@ -68,7 +68,7 @@ const clearBoard = function() {
     for(let i = 0; i < divBoxes.length; i++) {
       divBoxes[i].innerText = ""
     }
-    counter = 0
+    winCounter = 0
   })
 }
 
