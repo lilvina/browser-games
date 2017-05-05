@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', function(){
     divBoxIds.push(id)
   })
 
-  const moves = {
+  let moves = {
     X: [],
     O: []
   }
@@ -71,6 +71,10 @@ window.addEventListener('DOMContentLoaded', function(){
         divBoxes[i].innerText = ""
       }
       counter = 0
+      moves = {
+       X: [],
+       O: []
+      }
     })
   }
 
