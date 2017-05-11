@@ -21,12 +21,13 @@ const level = function(plan) {
     for(let x = 0; x < this.width; x++){
       let ch = line[x], fieldType = null
       let Actor = actorChars[ch]
-      if(Actor)
+      if(Actor) {
         this.actors.push(new Actor(new Vector(x,y), ch))
-      else if (ch == "x")
+      } else if (ch == "x") {
         fieldType = "wall"
-      else if (ch == "!")
+      } else if (ch == "!") {
         fieldType = "Lava"
+      }
       gridLine.push(fieldType)
     }
     this.grid.push(gridLine)
@@ -134,6 +135,7 @@ DOMDisplay.prototype.drawActors = function() {
 DOMDisplay.prototype.drawFrame = function() {
   if(this.actorLayer)
     this.wrap.removeChild(this.actorLayer)
+
   this.actorLayer = this.wrap.appendChild(this.drawActors())
   this.wrap.className = "game " + (this.level.status || "")
   this.scrollPlayerIntoView()
@@ -175,6 +177,7 @@ Level.prototype.obstacleAt = function(pos, size) {
     return "wall"
   if(yEnd > this.height)
     return "lava"
+
   for(let y = yStart; y < yEnd; y++){
     for(let x = xStart; x < xEnd; x++){
       let fieldType = this.grid[y][x]
@@ -233,10 +236,11 @@ let playerXSpeed = 7
 
 Player.prototype.moveX = function(step, level, keys) {
   this.speed.x = 0
-  if(keys.left)
+  if(keys.left) 
     this.speed.x -= playerXSpeed
   if(keys.right)
     this.speed.x += playerXSpeed
+
 
   let motion = new Vector(this.speed.x * step, 0)
   let newPos = this.pos.plus(motion)
@@ -245,6 +249,7 @@ Player.prototype.moveX = function(step, level, keys) {
     level.playerTouched(obstacle)
   else
     this.pos = newPos
+
 }
 
 let gravity = 30
@@ -273,6 +278,7 @@ Player.prototype.act = function(step, level, keys) {
   let otherActor = level.actorAt(this)
   if(otherActor)
     level.playerTouched(otherActor.type, otherActor)
+
 
   //losing animation
   if(level.status == "lost") {
