@@ -2,7 +2,7 @@ let levelPlan = [
   "                     ",
   "                     ",
   "  X             = X  ",
-  "  X        O O    X  ",
+  "  X        o o    X  ",
   "  X @     XXXXX   X  ",
   "  XXXXX           X  ",
   "      X!!!!!!!!!!!X  ",
@@ -10,7 +10,7 @@ let levelPlan = [
   "                     "
 ]
 
-const level = function(plan) {
+const Level = function(plan) {
   this.width = plan[0].length
   this.height = plan.length
   this.grid = []
@@ -55,8 +55,10 @@ Vector.prototype.times = function(factor) {
 
 let actorChars = {
   "@": Player,
-  "O": Coin,
-  "=": Lava, "|": Lava, "v": Lava
+  "o": Coin,
+  "=": Lava,
+  "|": Lava,
+  "v": Lava
 }
 
 const Player = function(pos) {
@@ -87,7 +89,7 @@ const Coin = function(pos) {
 }
 Coin.prototype.type = "coin"
 
-let simpleLevel = new Level(simpleLevelPlan)
+let simpleLevel = new Level(levelPlan)
 console.log(simpleLevel.width, "by", simpleLevel.height)
 
 const elt = function(name, className) {
@@ -367,9 +369,3 @@ const runGame = function(plans, Display) {
   }
   startLevel(0)
 }
-
-
-
-
-
-
