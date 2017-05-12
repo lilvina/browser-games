@@ -1,4 +1,4 @@
-let levelPlan = [
+var simpleLevelPlan = [
   "                     ",
   "                     ",
   "  X             = X  ",
@@ -10,23 +10,23 @@ let levelPlan = [
   "                     "
 ]
 
-const Level = function(plan) {
+function Level(plan) {
   this.width = plan[0].length
   this.height = plan.length
   this.grid = []
   this.actors = []
 
-  for(let y = 0; y < this.height; y++){
-    let line = plan[y], gridLine = []
-    for(let x = 0; x < this.width; x++){
-      let ch = line[x], fieldType = null
-      let Actor = actorChars[ch]
+  for(var y = 0; y < this.height; y++){
+    var line = plan[y], gridLine = []
+    for(var x = 0; x < this.width; x++){
+      var ch = line[x], fieldType = null
+      var Actor = actorChars[ch]
       if(Actor) {
         this.actors.push(new Actor(new Vector(x,y), ch))
       } else if (ch == "x") {
         fieldType = "wall"
       } else if (ch == "!") {
-        fieldType = "Lava"
+        fieldType = "lava"
       }
       gridLine.push(fieldType)
     }
@@ -42,7 +42,7 @@ Level.prototype.isFinished = function(){
   return this.status != null && this.finishDelay < 0
 }
 
-const Vector = function(x, y) {
+function Vector(x, y) {
   this.x = x
   this.y = y
 }
@@ -53,7 +53,7 @@ Vector.prototype.times = function(factor) {
   return new Vector(this.x * factor, this.y * factor)
 }
 
-let actorChars = {
+var actorChars = {
   "@": Player,
   "o": Coin,
   "=": Lava,
@@ -61,19 +61,19 @@ let actorChars = {
   "v": Lava
 }
 
-const Player = function(pos) {
+function Player(pos) {
   this.pos = pos.plus(new Vector(0, -0.5))
   this.size = new Vector(0.8, 1.5)
   this.speed = new Vector(0, 0)
 }
 Player.prototype.type = "player"
 
-const Lava = function(pos, ch) {
+function Lava(pos, ch) {
   this.pos = pos
   this.size = new Vector(1, 1)
   if (ch == "=") {
     this.speed = new Vector(2, 0)
-  } else if (ch == "!") {
+  } else if (ch == "|") {
     this.speed = new Vector(0, 2)
   } else if (ch == "v") {
     this.speed = new Vector(0, 3)
@@ -82,23 +82,23 @@ const Lava = function(pos, ch) {
 }
 Lava.prototype.type = "lava"
 
-const Coin = function(pos) {
+function Coin(pos) {
   this.basePos = this.pos = pos.plus(new Vector(0.2, 0.1))
   this.size = new Vector(0.6, 0.6)
   this.wobble = Math.random() * Math.PI * 2
 }
 Coin.prototype.type = "coin"
 
-let simpleLevel = new Level(levelPlan)
+var simpleLevel = new Level(simpleLevelPlan)
 console.log(simpleLevel.width, "by", simpleLevel.height)
 
-const elt = function(name, className) {
-  let elt = document.createElement(name)
+function elt(name, className) {
+  var elt = document.createElement(name)
   if(className) elt.className = className
     return elt
 }
 
-const DOMDisplay = function(parent, level) {
+function DOMDisplay(parent, level) {
   this.wrap = parent.appendChild(elt("div", "game"))
   this.level = level
 
@@ -107,13 +107,13 @@ const DOMDisplay = function(parent, level) {
   this.drawFrame()
 }
 
-let scale = 20
+var scale = 20
 
 DOMDisplay.prototype.drawBackground = function() {
-  let table = elt("table", "background")
+  var table = elt("table", "background")
   table.style.width = this.level.width * scale + "px"
   this.level.grid.forEach(function(row) {
-    let rowElt = table.appendChild(elt("tr"))
+    var rowElt = table.appendChild(elt("tr"))
     rowElt.style.height = scale + "px"
     row.forEach(function(type) {
       rowElt.appendChild(elt("td", type))
@@ -123,9 +123,9 @@ DOMDisplay.prototype.drawBackground = function() {
 }
 
 DOMDisplay.prototype.drawActors = function() {
-  let wrap = elt("div")
+  var wrap = elt("div")
   this.level.actors.forEach(function(actor) {
-    let rect = wrap.appendChild(elt("div", "actor ", + actor.type))
+    var rect = wrap.appendChild(elt("div", "actor " + actor.type))
     rect.style.width = actor.size.x * scale + "px"
     rect.style.height = actor.size.y * scale + "px"
     rect.style.left = actor.pos.x * scale + "px"
@@ -144,16 +144,17 @@ DOMDisplay.prototype.drawFrame = function() {
 }
 
 DOMDisplay.prototype.scrollPlayerIntoView = function() {
-  let width = this.wrap.clientWidth
-  let height = this.wrap.clientHeight
-  let margin = width / 3
+  var width = this.wrap.clientWidth
+  var height = this.wrap.clientHeight
+  var margin = width / 3
 
   //viewport
-  let left = this.wrap.scrollLeft, right = left + width
-  let top = this.wrap.scrollTop, bottom = top + height
+  var left = this.wrap.scrollLeft, right = left + width
+  var top = this.wrap.scrollTop, bottom = top + height
 
-  let player = this.level.player
-  let center = player.pos.plus(player.size.times(0.5)).times(scale)
+  var player = this.level.player
+  var center = player.pos.plus(player.size.times(0.5))
+    .times(scale)
 
   if(center.x < left + margin)
     this.wrap.scrollLeft = center.x - margin
@@ -170,19 +171,19 @@ DOMDisplay.prototype.clear = function() {
 }
 
 Level.prototype.obstacleAt = function(pos, size) {
-  let xStart = Math.floor(pos.x)
-  let xEnd = Math.ceil(pos.x + size.x)
-  let yStart = Math.floor(pos.y)
-  let yEnd = Math.ceil(pos.y + size.y)
+  var xStart = Math.floor(pos.x)
+  var xEnd = Math.ceil(pos.x + size.x)
+  var yStart = Math.floor(pos.y)
+  var yEnd = Math.ceil(pos.y + size.y)
 
   if(xStart < 0 || xEnd > this.width || yStart < 0)
     return "wall"
   if(yEnd > this.height)
     return "lava"
 
-  for(let y = yStart; y < yEnd; y++){
-    for(let x = xStart; x < xEnd; x++){
-      let fieldType = this.grid[y][x]
+  for(var y = yStart; y < yEnd; y++){
+    for(var x = xStart; x < xEnd; x++){
+      var fieldType = this.grid[y][x]
       if(fieldType)
         return fieldType
     }
@@ -190,8 +191,8 @@ Level.prototype.obstacleAt = function(pos, size) {
 }
 
 Level.prototype.actorAt = function(actor){
-  for(let i = 0; i < this.actors.length; i++){
-    let other = this.actors[i]
+  for(var i = 0; i < this.actors.length; i++){
+    var other = this.actors[i]
     if(other != actor &&
       actor.pos.x + actor.size.x > other.pos.x &&
       actor.pos.x < other.pos.x + other.size.x &&
@@ -201,14 +202,14 @@ Level.prototype.actorAt = function(actor){
   }
 }
 
-let maxStep = 0.05
+var maxStep = 0.05
 
 Level.prototype.animate = function(step, keys) {
   if(this.status != null)
     this.finishDelay -= step
 
   while(step > 0) {
-    let thisStep = Math.min(step, maxStep)
+    var thisStep = Math.min(step, maxStep)
     this.actors.forEach(function(actor){
       actor.act(thisStep, this, keys)
     }, this)
@@ -217,7 +218,7 @@ Level.prototype.animate = function(step, keys) {
 }
 
 Lava.prototype.act = function(step, level) {
-  let newPos = this.pos.plus(this.speed.times(step))
+  var newPos = this.pos.plus(this.speed.times(step))
   if(!level.obstacleAt(newPos, this.size))
     this.pos = newPos
   else if(this.repeatPos)
@@ -226,15 +227,15 @@ Lava.prototype.act = function(step, level) {
     this.speed = this.speed.times(-1)
 }
 
-let wobbleSpeed = 8, wobbleDist = 0.07
+var wobbleSpeed = 8, wobbleDist = 0.07
 
 Coin.prototype.act = function(step){
   this.wobble += step * wobbleSpeed
-  let wobblePos = Math.sin(this.wobble) * wobbleDist
+  var wobblePos = Math.sin(this.wobble) * wobbleDist
   this.pos = this.basePos.plus(new Vector(0, wobblePos))
 }
 
-let playerXSpeed = 7
+var playerXSpeed = 7
 
 Player.prototype.moveX = function(step, level, keys) {
   this.speed.x = 0
@@ -244,9 +245,9 @@ Player.prototype.moveX = function(step, level, keys) {
     this.speed.x += playerXSpeed
 
 
-  let motion = new Vector(this.speed.x * step, 0)
-  let newPos = this.pos.plus(motion)
-  let obstacle = level.obstacleAt(newPos, this.size)
+  var motion = new Vector(this.speed.x * step, 0)
+  var newPos = this.pos.plus(motion)
+  var obstacle = level.obstacleAt(newPos, this.size)
   if(obstacle)
     level.playerTouched(obstacle)
   else
@@ -254,14 +255,14 @@ Player.prototype.moveX = function(step, level, keys) {
 
 }
 
-let gravity = 30
-let jumpSpeed = 17
+var gravity = 30
+var jumpSpeed = 17
 
 Player.prototype.moveY = function(step, level, keys) {
   this.speed.y += step * gravity
-  let motion = new Vector(0, this.speed.y * step)
-  let newPos = this.pos.plus(motion)
-  let obstacle = level.obstacleAt(newPos, this.size)
+  var motion = new Vector(0, this.speed.y * step)
+  var newPos = this.pos.plus(motion)
+  var obstacle = level.obstacleAt(newPos, this.size)
   if(obstacle) {
     level.playerTouched(obstacle)
     if(keys.up && this.speed.y > 0)
@@ -277,7 +278,7 @@ Player.prototype.act = function(step, level, keys) {
   this.moveX(step, level, keys)
   this.moveY(step, level, keys)
 
-  let otherActor = level.actorAt(this)
+  var otherActor = level.actorAt(this)
   if(otherActor)
     level.playerTouched(otherActor.type, otherActor)
 
@@ -307,13 +308,13 @@ Level.prototype.playerTouched = function(type, actor) {
   }
 }
 
-let arrowCodes = {37: "left", 38: "up", 39: "right"}
+var arrowCodes = {37: "left", 38: "up", 39: "right"}
 
-const trackKeys = function(codes) {
-  let pressed = Object.create(null)
+function trackKeys(codes) {
+  var pressed = Object.create(null)
   function handler(event) {
     if(codes.hasOwnProperty(event.keyCode)) {
-      let down = event.type == "keydown"
+      var down = event.type == "keydown"
       pressed[codes[event.keyCode]] = down
       event.preventDefault()
     }
@@ -324,12 +325,12 @@ const trackKeys = function(codes) {
   return pressed
 }
 
-const runAnimation = function(frameFunc) {
-  let lastTime = null
-  const frame = function(time) {
-    let stop = false
+var runAnimation = function(frameFunc) {
+  var lastTime = null
+  var frame = function(time) {
+    var stop = false
     if(lastTime != null) {
-      let timeStep = Math.min(time - lastTime, 100) / 1000
+      var timeStep = Math.min(time - lastTime, 100) / 1000
       stop = frameFunc(timeStep) === false
     }
 
@@ -340,10 +341,10 @@ const runAnimation = function(frameFunc) {
   requestAnimationFrame(frame)
 }
 
-let arrows = trackKeys(arrowCodes)
+var arrows = trackKeys(arrowCodes)
 
-const runLevel = function(level, Display, andThen) {
-  let display = new Display(document.body, level)
+function runLevel(level, Display, andThen) {
+  var display = new Display(document.body, level)
   runAnimation(function(step) {
     level.animate(step, arrows)
     display.drawFrame(step)
@@ -356,8 +357,8 @@ const runLevel = function(level, Display, andThen) {
   })
 }
 
-const runGame = function(plans, Display) {
-  const startLevel = function(n) {
+function runGame(plans, Display) {
+  function startLevel(n) {
     runLevel(new Level(plans[n]), Display, function(status) {
       if(status == "lost")
         startLevel(n)

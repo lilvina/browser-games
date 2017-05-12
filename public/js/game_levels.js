@@ -1,4 +1,4 @@
-let game_levels = [
+var GAME_LEVELS = [
   ["                                                                                ",
    "                                                                                ",
    "                                                                                ",
@@ -137,4 +137,4 @@ let game_levels = [
 ];
 
 if (typeof module != "undefined" && module.exports)
-  module.exports = game_levels;
+  module.exports = GAME_LEVELS;
