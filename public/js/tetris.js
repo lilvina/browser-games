@@ -131,7 +131,7 @@ Piece.prototype.lock = function(){
   for(var y = 0; y < height; y++){
     var line = true
     for(var x = 0; x < width; x++){
-      line = line && !board[y][x]
+      line = line && board[y][x] !== ""
     }
     if(line){
       for(var y2 = y; y2 > 1; y2--){
@@ -140,7 +140,7 @@ Piece.prototype.lock = function(){
         }
       }
       for(var x = 0; x < width; x++){
-        board[0][x] = false
+        board[0][x] = ""
       }
       nlines++
     }
